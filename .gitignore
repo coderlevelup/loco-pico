@@ -1,0 +1,20 @@
+# Zephyr / west build artifacts
+build/
+build-*/
+*.o
+*.obj
+*.bin
+*.hex
+*.elf
+*.map
+*.lst
+*.d
+compile_commands.json
+.cache/
+twister-out/
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
