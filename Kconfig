@@ -40,21 +40,6 @@ config LOCO_PICO_USB_REMOTE_WAKEUP
 	bool "USB device supports remote wakeup"
 	default n
 
-menuconfig LOCO_PICO_CDC_ECM
-	bool "USB CDC-ECM network transport"
-	default n
-	select USB_DEVICE_STACK_NEXT
-	select UDC_DRIVER
-	select USBD_CDC_ECM_CLASS
-	select NET_L2_ETHERNET
-	select NET_CONFIG_SETTINGS
-	select NET_DHCPV4_SERVER
-	select NET_UDP
-	help
-	  Bring up the USB CDC-ECM virtual Ethernet interface so the device can
-	  speak Zenoh (ROS 2) over a single USB cable. The static addresses and
-	  DHCPv4 server tuning are supplied by the "cdc-ecm" snippet.
-
 choice LOCO_PICO_LED_BACKEND
 	prompt "Onboard status LED backend"
 	default LOCO_PICO_LED_STRIP if SOC_SERIES_ESP32S3

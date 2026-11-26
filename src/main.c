@@ -126,11 +126,9 @@ int main(void)
 
 	LOG_INF("loco-pico on %s", CONFIG_BOARD_TARGET);
 
-	if (IS_ENABLED(CONFIG_LOCO_PICO_CDC_ECM)) {
-		ret = loco_pico_usbd_net_init();
-		if (ret < 0) {
-			LOG_ERR("USB CDC-ECM bring-up failed: %d", ret);
-		}
+	ret = loco_pico_usbd_net_init();
+	if (ret < 0) {
+		LOG_ERR("USB CDC-ECM bring-up failed: %d", ret);
 	}
 
 	bool state = false;

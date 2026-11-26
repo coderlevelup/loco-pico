@@ -38,7 +38,7 @@ LOG_MODULE_REGISTER(loco_usbd_net, LOG_LEVEL_INF);
 
 #define DEFAULT_ZENOH_PORT "7447"
 
-/* USB CDC-ECM Ethernet class instance, provided by the cdc-ecm snippet overlay. */
+/* USB CDC-ECM Ethernet class instance, provided by the board devicetree overlay. */
 #if DT_HAS_COMPAT_STATUS_OKAY(zephyr_cdc_ecm_ethernet)
 #define CDC_ECM_NODE DT_COMPAT_GET_ANY_STATUS_OKAY(zephyr_cdc_ecm_ethernet)
 #endif
