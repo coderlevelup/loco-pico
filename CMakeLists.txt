@@ -32,6 +32,7 @@ target_sources(app PRIVATE
   ${MICROCDR_DIR}/src/c/types/string.c
 
   ${COMPAT_DIR}/picoros_compat.c
+  ${COMPAT_DIR}/zephyr_atomics.c
 )
 
 target_include_directories(app PRIVATE
