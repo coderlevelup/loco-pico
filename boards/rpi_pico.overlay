@@ -1,0 +1,18 @@
+/*
+ * Copyright 2026 loco-pico contributors
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Raspberry Pi Pico (RP2040) application overlay.
+ *
+ * The onboard LED needs no extra devicetree here: the board already provides
+ * the led0 alias (GPIO25) that src/led_status.c uses. This overlay only attaches
+ * the USB CDC-ECM virtual Ethernet interface to the RP2040 USB device
+ * controller (tagged zephyr_udc0 by the board).
+ */
+
+&zephyr_udc0 {
+	cdc_ecm_eth0: cdc_ecm_eth0 {
+		compatible = "zephyr,cdc-ecm-ethernet";
+		remote-mac-address = "00005E005301";
+	};
+};

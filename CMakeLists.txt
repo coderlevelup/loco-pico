@@ -3,9 +3,6 @@
 
 cmake_minimum_required(VERSION 3.20.0)
 
-# Make the in-tree snippets (e.g. cdc-ecm) discoverable via -S <name>.
-list(APPEND SNIPPET_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
-
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(loco_pico)
 
@@ -16,7 +13,6 @@ project(loco_pico)
 set(PICOROS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/Pico-ROS)
 set(MICROCDR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/Micro-CDR)
 set(COMPAT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/compat)
-set(TYPES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/types)
 
 target_sources(app PRIVATE
   src/main.c
@@ -38,16 +34,19 @@ target_sources(app PRIVATE
 
 target_include_directories(app PRIVATE
   usb
-  ${TYPES_DIR}
   ${COMPAT_DIR}
   ${PICOROS_DIR}/src
+  ${PICOROS_DIR}/examples
   ${MICROCDR_DIR}/include
   ${PICOROS_DIR}/thirdparty/config
 )
 
-# The picoserdes type table to compile in.
+# Pico-ROS ships the common ROS 2 message and service types generated from the
+# ROS IDL definitions (rcl_interfaces, common_interfaces, example_interfaces and
+# unique_identifier_msgs) as examples/example_types.h. Compile that table in so
+# the app can publish or subscribe any of those types.
 target_compile_definitions(app PRIVATE
-  USER_TYPE_FILE="user_types.h"
+  USER_TYPE_FILE="example_types.h"
 )
 
 # Force the compatibility declarations into Pico-ROS sources so its calls to

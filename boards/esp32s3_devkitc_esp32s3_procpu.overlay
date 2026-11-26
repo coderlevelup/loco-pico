@@ -43,3 +43,11 @@
 		led-strip = &led_strip;
 	};
 };
+
+/* USB CDC-ECM virtual Ethernet interface on the ESP32-S3 USB-OTG controller. */
+&zephyr_udc0 {
+	cdc_ecm_eth0: cdc_ecm_eth0 {
+		compatible = "zephyr,cdc-ecm-ethernet";
+		remote-mac-address = "00005E005301";
+	};
+};

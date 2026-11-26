@@ -1,0 +1,49 @@
+# West manifest for loco-pico.
+#
+# This repository is its own manifest repository (a "forest", or T2, workspace):
+# the application and the manifest live here, while Zephyr and its modules are
+# separate projects pulled in by "west update".
+#
+# Typical use from a fresh directory:
+#
+#   git clone --recurse-submodules https://github.com/<you>/loco-pico.git app
+#   west init -l app
+#   west update
+#   west build -b rpi_pico app
+#
+# The "self: path: app" below declares that the manifest repository sits in a
+# directory named "app" inside the workspace, which is what makes
+# "west init -l app" (or "west config manifest.path app") find it.
+
+manifest:
+  remotes:
+    - name: zephyrproject-rtos
+      url-base: https://github.com/zephyrproject-rtos
+    - name: eclipse-zenoh
+      url-base: https://github.com/eclipse-zenoh
+
+  defaults:
+    remote: zephyrproject-rtos
+
+  group-filter:
+    - -babblesim
+    - -optional
+    - -testing
+
+  projects:
+    # Zephyr itself. "import: true" pulls in Zephyr's default module set (HALs,
+    # CMSIS, picolibc, ...), which is what lets the RP2040 and ESP32-S3 builds
+    # work without listing every module by hand.
+    - name: zephyr
+      revision: v4.4.2
+      import: true
+
+    # The Zenoh implementation Pico-ROS speaks on the wire. It ships its own
+    # Zephyr module (zephyr/module.yml), so this single project is enough.
+    - name: zenoh-pico
+      remote: eclipse-zenoh
+      revision: 1.6.2
+      path: modules/lib/zenoh-pico
+
+  self:
+    path: app
