@@ -20,6 +20,7 @@ set(TYPES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/types)
 
 target_sources(app PRIVATE
   src/main.c
+  src/led_status.c
   usb/usbd_net.c
 
   ${PICOROS_DIR}/src/picoros.c

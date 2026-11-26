@@ -1,24 +1,21 @@
 // Copyright 2026 loco-pico contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Stage 5: blink the onboard LED and publish its state to ROS 2 as
-// std_msgs/msg/Bool over a Pico-ROS (rmw_zenoh) session carried by USB CDC-ECM.
+// Blink the onboard LED and publish its state to ROS 2 as std_msgs/msg/Bool
+// over a Pico-ROS (rmw_zenoh) session carried by USB CDC-ECM.
 
 #include <stdio.h>
 
 #include <zephyr/kernel.h>
-#include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
 
+#include "led_status.h"
 #include "picoros.h"
 #include "picoserdes.h"
 
 #include "usbd_net.h"
 
 LOG_MODULE_REGISTER(loco_pico, LOG_LEVEL_INF);
-
-#define LED0_NODE DT_ALIAS(led0)
-static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
 #define BLINK_PERIOD_MS 1000
 #define RECONNECT_DELAY_MS 1000
@@ -120,14 +117,10 @@ static void ros_publish(bool state)
 
 int main(void)
 {
-	if (!gpio_is_ready_dt(&led)) {
-		LOG_ERR("LED device %s is not ready", led.port->name);
-		return -ENODEV;
-	}
+	int ret = led_status_init();
 
-	int ret = gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);
 	if (ret < 0) {
-		LOG_ERR("Failed to configure LED pin: %d", ret);
+		LOG_ERR("Failed to initialise the status LED: %d", ret);
 		return ret;
 	}
 
@@ -144,7 +137,7 @@ int main(void)
 
 	while (true) {
 		state = !state;
-		gpio_pin_set_dt(&led, state ? 1 : 0);
+		led_status_set(state);
 
 		if (!ros_connected) {
 			if (loco_pico_usbd_net_ready() && build_locator() == 0) {

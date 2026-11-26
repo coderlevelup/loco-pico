@@ -55,4 +55,27 @@ menuconfig LOCO_PICO_CDC_ECM
 	  speak Zenoh (ROS 2) over a single USB cable. The static addresses and
 	  DHCPv4 server tuning are supplied by the "cdc-ecm" snippet.
 
+choice LOCO_PICO_LED_BACKEND
+	prompt "Onboard status LED backend"
+	default LOCO_PICO_LED_STRIP if SOC_SERIES_ESP32S3
+	default LOCO_PICO_LED_GPIO
+	help
+	  How the onboard LED that reports the blink state is driven.
+
+config LOCO_PICO_LED_GPIO
+	bool "Plain GPIO pin (devicetree alias led0)"
+	help
+	  Drive the LED through the GPIO API. The board devicetree must provide a
+	  led0 alias whose gpios property points at the LED.
+
+config LOCO_PICO_LED_STRIP
+	bool "Addressable LED strip (devicetree alias led-strip)"
+	select LED_STRIP
+	help
+	  Drive the LED through the LED strip API, for boards whose status LED is
+	  an addressable RGB part such as a WS2812. The board devicetree must
+	  provide a led-strip alias.
+
+endchoice
+
 source "Kconfig.zephyr"
