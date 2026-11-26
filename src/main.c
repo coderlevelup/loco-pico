@@ -1,12 +1,14 @@
 // Copyright 2026 loco-pico contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Stage 1: plain blink on the onboard LED (Raspberry Pi Pico, GPIO25).
-// The ROS 2 publisher and USB CDC-ECM transport are added in later stages.
+// Stage 2: bring up the USB CDC-ECM virtual Ethernet link, then blink the
+// onboard LED. The ROS 2 publisher is added in a later stage.
 
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
+
+#include "usbd_net.h"
 
 LOG_MODULE_REGISTER(loco_pico, LOG_LEVEL_INF);
 
@@ -26,7 +28,22 @@ int main(void)
 		return ret;
 	}
 
-	LOG_INF("loco-pico blink bring-up on %s", CONFIG_BOARD_TARGET);
+	LOG_INF("loco-pico bring-up on %s", CONFIG_BOARD_TARGET);
+
+	if (IS_ENABLED(CONFIG_LOCO_PICO_CDC_ECM)) {
+		ret = loco_pico_usbd_net_init();
+		if (ret < 0) {
+			LOG_ERR("USB CDC-ECM bring-up failed: %d", ret);
+		} else {
+			char locator[32];
+
+			if (loco_pico_usbd_net_peer_locator(locator, sizeof(locator)) == 0) {
+				LOG_INF("USB CDC-ECM up; host Zenoh peer at %s", locator);
+			} else {
+				LOG_INF("USB CDC-ECM up");
+			}
+		}
+	}
 
 	bool state = false;
 

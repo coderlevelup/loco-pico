@@ -3,7 +3,18 @@
 
 cmake_minimum_required(VERSION 3.20.0)
 
+# Make the in-tree snippets (e.g. cdc-ecm) discoverable via -S <name>.
+list(APPEND SNIPPET_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(loco_pico)
 
-target_sources(app PRIVATE src/main.c)
+# Application sources.
+target_sources(app PRIVATE
+  src/main.c
+  usb/usbd_net.c
+)
+
+target_include_directories(app PRIVATE
+  usb
+)

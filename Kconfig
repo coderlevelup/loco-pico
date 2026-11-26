@@ -1,0 +1,58 @@
+# Copyright 2026 loco-pico contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# This file is the application Kconfig root, so it must source Zephyr's
+# top-level Kconfig at the end.
+
+config LOCO_PICO_USB_VID
+	hex "USB device Vendor ID (VID)"
+	default 0x303a if SOC_FAMILY_ESPRESSIF_ESP32
+	default 0x2fe3
+	help
+	  USB device Vendor ID. Defaults to Espressif (0x303a) on ESP32 targets
+	  and to the Zephyr project VID (0x2fe3) elsewhere.
+
+config LOCO_PICO_USB_PID
+	hex "USB device Product ID (PID)"
+	default 0x0001
+	help
+	  USB device Product ID.
+
+config LOCO_PICO_USB_MANUFACTURER
+	string "USB manufacturer string"
+	default "loco-pico"
+
+config LOCO_PICO_USB_PRODUCT
+	string "USB product string"
+	default "loco-pico CDC-ECM"
+
+config LOCO_PICO_USB_MAX_POWER
+	int "USB bus power consumption (2 mA units)"
+	default 125
+	help
+	  Maximum bus current in 2 mA units (125 = 250 mA).
+
+config LOCO_PICO_USB_SELF_POWERED
+	bool "USB device is self-powered"
+	default n
+
+config LOCO_PICO_USB_REMOTE_WAKEUP
+	bool "USB device supports remote wakeup"
+	default n
+
+menuconfig LOCO_PICO_CDC_ECM
+	bool "USB CDC-ECM network transport"
+	default n
+	select USB_DEVICE_STACK_NEXT
+	select UDC_DRIVER
+	select USBD_CDC_ECM_CLASS
+	select NET_L2_ETHERNET
+	select NET_CONFIG_SETTINGS
+	select NET_DHCPV4_SERVER
+	select NET_UDP
+	help
+	  Bring up the USB CDC-ECM virtual Ethernet interface so the device can
+	  speak Zenoh (ROS 2) over a single USB cable. The static addresses and
+	  DHCPv4 server tuning are supplied by the "cdc-ecm" snippet.
+
+source "Kconfig.zephyr"
